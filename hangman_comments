@@ -1,0 +1,130 @@
+#Imports random which allows you to run the random command
+import random
+
+#Creates a list where you can add words
+HANGMAN_WORDS = [
+    'python',
+    'machine learning',
+    'developer',
+    'coffee',
+    'deadline',
+    'error',
+    'compiler',
+]
+
+#Creates a list where letters will appear
+LETTERS = []
+
+#Chooses a random word from the item list
+CORRECT = random.choice(HANGMAN_WORDS)
+
+#The player enter their word here
+CURRENT = "_" * len(CORRECT)
+
+#Creates the variable "LIVES" and gives it 10
+LIVES = 10
+
+#Tells the program what to print when you guess the right word
+def win():
+    global CORRECT
+    print()
+    print("You win! :)")
+    print("The word was:", CORRECT.capitalize())
+    print()
+    exit()
+
+#Tells the program what to print when you guess the wrong word
+def lose():
+    global CORRECT
+    print()
+    print("You lose! :(")
+    print("The word was:", CORRECT.capitalize())
+    print()
+    exit()
+
+#Takes a life when you guess the wrong word
+def hit():
+    global LIVES
+    LIVES -= 1
+    hanged_man()
+    
+
+#This makes it so you can only guess letters and whole words otherwise it will return a message. Also makes all letters lower case
+#Takes a hit if you guess the wrong letter
+def hang_input():
+    global LETTERS
+    global CORRECT
+    print("Guess letter or word.")
+    inp = input("enter: ")
+    if(len(inp) > 1):
+        if(inp.lower() == CORRECT):
+            win()
+            return ''
+        else:
+            hit()
+            return ''
+    inp = inp.lower()[0]
+    if(inp in LETTERS or inp.isdigit()):
+        print("Enter valid letter")
+        return hang_input()
+    return inp
+
+#Prints a line of ascii depending on the amout of lives you have left
+def hanged_man():
+    global LIVES
+    print("___________..________")
+    print("| .__________))______|")
+    if(LIVES >8): return
+    print("| | / /      || ")
+    print("| |/ /       ||")
+    if(LIVES >7): return
+    print("| | /        ||.-''.")
+    print("| |/         |/  _  \ ")
+    print("| |          ||  `/,|")
+    if(LIVES >6): return
+    print("| |          (\\\\`_.'")
+    print("| |         .-`--'.")
+    if(LIVES >5): return
+    print("| |        /Y . . Y\ ")
+    print("| |       // |   | \\\\")
+    if(LIVES >4): return
+    print("| |      //  | . |  \\\\")
+    print("| |     ')   |   |   (`")
+    if(LIVES >3): return
+    print("| |          ||'||")
+    print("| |          || ||")
+    print("| |          || ||")
+    if(LIVES >2): return
+    print("| |          || ||")
+    print("|  \        / | | \ ")
+    print("|   \       `-' `-'    ")
+    if(LIVES >1): return
+    print("| |\ \                ")
+    print("| | \ \               ")
+
+#Makes it so after you guess it says if you already guessed that or correct. 
+#It also shows you what letters you have already guessed. In short it prints the UI elements that tell you info
+def play():
+    global LETTERS, LIVES, CORRECT, CURRENT
+    guess = hang_input()
+    if(guess in CURRENT):
+        print("Already guessed that...")
+    elif(guess in CORRECT):
+        for i in range(len(CORRECT)):
+            if(CORRECT[i] == guess):
+                CURRENT = CURRENT[:i] + guess + CURRENT[i+1:]
+        print('Correct!')
+    elif(guess == ''):
+        pass
+    else:
+        LETTERS.append(guess)
+        hit()
+
+    print(LETTERS)
+    print(CURRENT)   
+
+#Tells the program to run while you have above 0 lives
+while LIVES > 0:
+    play()
+else:
+    lose()
